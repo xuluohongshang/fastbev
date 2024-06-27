@@ -8,7 +8,7 @@ set +e
 # 可以解压上面压缩包mmdet3d.tgz到/mnt/ve_parking/sunlibo/bins/，然后执行：tar -xzf mmdet3d.tgz
 # 执行：/mnt/ve_parking/sunlibo/bins/mmdet3d/bin/python3 -m pip list |grep mmdet 可以查看mmdet3d本地包指向的本地环境，
 # 如果不对，需要cd /mnt/ve_parking/sunlibo/psd/mmdetection3d/ 使用来重新安装mmdet3d，安装命令为：
-# /mnt/ve_parking/sunlibo/bins/mmdet3d/bin/python3 -m pip install -e . 进行本地安装，检查安装可以使用上述方式查看安装包指向
+# /mnt/ve_parking/sunlibo/bins/sunlibo/bin/python3 -m pip install -e . 进行本地安装，检查安装可以使用上述方式查看安装包指向
 # 运行参数说明：
 # $1 代表挂载盘下的用户目录，如sunlibo
 # $2 训练加载的离线的mmdetection3d训练框架所在目录
@@ -73,22 +73,29 @@ pip config set install.trusted-host mirrors.aliyun.com
 
 
 mkdir -p /mnt && ln -s /share /mnt/ve_parking
-cd /share/sunlibo/projects/fastbev
 sleep 1s
 if [ -z "${HM_WORK_HOME}" ];then
   HM_WORK_HOME=${PWD}
 fi
 cd ${HM_WORK_HOME}
 
-# python环境及mmdet3d本地包依赖：/mnt/ve_parking/sunlibo/bins/mmdet3d/bin/python3
-export PATH="/mnt/ve_parking/sunlibo/bins/sunlibo/bin/:${PATH}"
 
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
 
+
+
+# lucas提交任务进行本地化环境的训练
 # 修改配置参数尽量在配置文件中修改！
+# python环境及mmdet3d本地包依赖：/mnt/ve_parking/sunlibo/bins/mmdet3d/bin/python3
+export PATH="/mnt/ve_parking/sunlibo/bins/sunlibo/bin/:${PATH}"
+# /mnt/ve_parking/sunlibo/bins/sunlibo/bin/python3 -m pip install -e .
+cd /share/sunlibo/projects/fastbev
+mkdir data
+# ln -s /oss://haomo-algorithms/release/algorithms/manual_created_cards/628c5f667844160dda20fcc8  /mnt/ve_parking/sunlibo/projects/fastbev/data/nuscenes
+# ln -s /tos://haomo-public/lucas-generation/public_datasets/nuScenes  /mnt/ve_parking/sunlibo/projects/fastbev/data/nuscenes
 TRAIN_CONFIG=configs/fastbev/exp/paper/fastbev_m0_r18_s256x704_v200x200x4_c192_d2_f4.py
-bash tools/ddp_train.sh ${HM_WORK_HOME}/$TRAIN_CONFIG \
+bash tools/ddp_train.sh /share/sunlibo/projects/fastbev/$TRAIN_CONFIG \
         "work_dir=./work_dirs/train_debug
         log_config.interval=2
         data.samples_per_gpu=1

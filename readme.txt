@@ -67,7 +67,8 @@ pip install einops fvcore seaborn iopath==0.1.9 timm==0.6.13
 数据集：
 /mnt/ve_parking/zhenghaowen/mmdetection3d/data/nuscenes -> /oss://haomo-algorithms/release/algorithms/manual_created_cards/628c5f667844160dda20fcc8/
 
-
+ln -s /oss://haomo-algorithms/release/algorithms/manual_created_cards/628c5f667844160dda20fcc8  /mnt/ve_parking/sunlibo/projects/fastbev/data/nuscenes
+ln -s /tos://haomo-public/lucas-generation/public_datasets/nuScenes  /mnt/ve_parking/sunlibo/projects/fastbev/data/nuscenes
 
 lucas提交任务进行本地训练：
 cd /mnt/ve_parking/sunlibo/projects/fastbev
