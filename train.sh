@@ -70,9 +70,10 @@ pip config set install.trusted-host mirrors.aliyun.com
 
 # echo "pipeline init done"
 
-cd /share/sunlibo/projects/fastbev
+
 
 mkdir -p /mnt && ln -s /share /mnt/ve_parking
+cd /share/sunlibo/projects/fastbev
 sleep 1s
 if [ -z "${HM_WORK_HOME}" ];then
   HM_WORK_HOME=${PWD}
@@ -97,8 +98,9 @@ bash tools/ddp_train.sh ${HM_WORK_HOME}/$TRAIN_CONFIG \
         data.test.ann_file=data/nuscenes_v1.0-mini_pkl/nuscenes_infos_val_4d_interval3_max60.pkl
         optimizer.type=AdamW"
 
-
-# # loop:
-# bash pipeline_loop_train.sh sunlibo psd hm_psd_vpformer_grid150.py loop_psd_bev_v2_train0908tos_o12w_h6w_ipm2grid150_8gpu_b32_e32
-# bash pipeline_loop_train.sh sunlibo psd hm_psd_vpformer_grid208.py loop_psd_bev_v2_train0908tos_o12w_h6w_ipm2grid208_8gpu_b32_e32
-# bash pipeline_loop_train.sh sunlibo psd hm_psd_vpformer_grid240.py loop_psd_bev_v2_train0908tos_o12w_h6w_ipm2grid240_8gpu_b32_e32
+endTime=`date +%Y%m%d-%H:%M:%S`
+endTime_s=`date +%s`
+sumTime=$[ $endTime_s - $startTime_s ]
+echo ""
+echo "########################train " "$startTime ---> $endTime" "cost time: $sumTime seconds"
+echo ""
