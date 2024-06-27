@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 set -x
-
+# 对于由 slurm管理的集群上，mmdetection 的运行，可以采用 slurm_train.sh 脚本
+# ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} ${WORK_DIR} [${GPUS}]
 PARTITION=$1
 JOB_NAME=$2
 CONFIG=$3

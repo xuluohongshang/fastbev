@@ -4,38 +4,38 @@ model = dict(
     style="v1",
     backbone=dict(
         type='ResNet',
-        depth=50,
+        depth=18,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         norm_eval=True,
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18'),
         style='pytorch'
     ),
     neck=dict(
         type='FPN',
         norm_cfg=dict(type='SyncBN', requires_grad=True),
-        in_channels=[256, 512, 1024, 2048],
+        in_channels=[64, 128, 256, 512],
         out_channels=64,
         num_outs=4),
     neck_fuse=dict(in_channels=[256], out_channels=[64]),
     neck_3d=dict(
         type='M2BevNeck',
-        in_channels=64*6,
-        out_channels=256,
-        num_layers=6,
+        in_channels=64*4,
+        out_channels=192,
+        num_layers=2,
         stride=2,
         is_transpose=False,
-        fuse=dict(in_channels=64*6*4, out_channels=64*6),
+        fuse=dict(in_channels=64*4*4, out_channels=64*4),
         norm_cfg=dict(type='SyncBN', requires_grad=True)),
     seg_head=None,
     bbox_head=dict(
         type='FreeAnchor3DHead',
         is_transpose=True,
         num_classes=10,
-        in_channels=256,
-        feat_channels=256,
+        in_channels=192,
+        feat_channels=192,
         num_convs=0,
         use_direction_classifier=True,
         pre_anchor_topk=25,
@@ -70,8 +70,8 @@ model = dict(
         loss_dir=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.8)),
     multi_scale_id=[0],
-    n_voxels=[[250, 250, 6]],
-    voxel_size=[[0.4, 0.4, 1.0]],
+    n_voxels=[[200, 200, 4]],
+    voxel_size=[[0.5, 0.5, 1.5]],
     # model training and testing settings
     train_cfg=dict(
         assigner=dict(
@@ -114,6 +114,8 @@ class_names = [
 ]
 dataset_type = 'NuScenesMultiView_Map_Dataset2'
 data_root = './data/nuscenes/'
+# data_root = 'data/nuscenes_data/nuscenes/'
+
 # Input modality for nuScenes dataset, this is consistent with the submission
 # format which requires the information in input_modality.
 input_modality = dict(
@@ -126,14 +128,14 @@ input_modality = dict(
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 data_config = {
     'src_size': (900, 1600),
-    'input_size': (512, 1408),
+    'input_size': (256, 704),
     # train-aug
     'resize': (-0.06, 0.11),
     'crop': (-0.05, 0.05),
     'rot': (-5.4, 5.4),
     'flip': True,
     # test-aug
-    'test_input_size': (512, 1408),
+    'test_input_size': (256, 704),
     'test_resize': 0.0,
     'test_rotate': 0.0,
     'test_flip': False,
@@ -310,7 +312,7 @@ dist_params = dict(backend='nccl')
 find_unused_parameters = True  # todo: fix number of FPN outputs
 log_level = 'INFO'
 
-load_from = 'pretrained_models/cascade_mask_rcnn_r50_fpn_coco-mstrain_3x_20e_nuim_bbox_mAP_0.5400_segm_mAP_0.4300.pth'
+load_from = 'pretrained_models/cascade_mask_rcnn_r18_fpn_coco-mstrain_3x_20e_nuim_bbox_mAP_0.5110_segm_mAP_0.4070.pth'
 resume_from = None
 workflow = [('train', 1)]
 
